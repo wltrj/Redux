@@ -3,6 +3,7 @@ package ceneax.app.lib.redux
 import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.DialogFragment
@@ -28,13 +29,17 @@ object Redux {
      */
     internal fun init(app: Application) {
         _application = app
-        app.registerActivityLifecycleCallbacks(ActivityLifecycleCallback())
+        app.registerActivityLifecycleCallbacks(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            ActivityLifecycleCallbackQ()
+        } else {
+            ActivityLifecycleCallback()
+        })
     }
 
     /**
-     * 提供给外部使用的方法，用于自定义某些配置
+     * 提供给外部使用的初始化，用于自定义某些配置
      */
-    fun config(
+    fun init(
         loadingDialog: IReduxLoadingDialog<*> = ReduxLoadingDialog(),
         modelFactory: ViewModelProvider.Factory = ReduxViewModelFactory()
     ) {
@@ -44,13 +49,44 @@ object Redux {
 }
 
 /**
- * [Description] : Activity生命周期监听类
+ * [Description] : Activity生命周期监听类，低于 Android Q 的版本
  *
  * [Date] : 2022-05-27 16:54
  *
  * [Author] : ceneax
  */
 internal class ActivityLifecycleCallback : IActivityLifecycleCallback {
+    /**
+     * 最开始用的是 [onActivityPreCreated]，后面发现 Android Q 之前的版本没有 [onActivityPreCreated] 回调
+     *
+     * 并且也没有 [onActivityPostCreated] 回调，所以低于 Android Q 的版本只能用 [onActivityCreated] 处理初始化
+     */
+    @Suppress("UNCHECKED_CAST")
+    override fun onActivityCreated(activity: Activity, bundle: Bundle?) {
+        if (activity !is IReduxView<*, *>) return
+        if (activity !is FragmentActivity) return
+
+        initReduxByBeforeCreate(activity, activity.intent?.extras)
+
+        (activity as FragmentActivity).supportFragmentManager
+            .registerFragmentLifecycleCallbacks(FragmentLifecycleCallbacksImpl(), true)
+
+        (activity as IReduxView<IReduxState, *>).let {
+            it.effect._stateManager.observeAll(activity) {
+                it.invalidate(this)
+            }
+        }
+    }
+}
+
+/**
+ * [Description] : Activity生命周期监听类，高于 Android Q 的版本
+ *
+ * [Date] : 2022-05-27 16:54
+ *
+ * [Author] : ceneax
+ */
+internal class ActivityLifecycleCallbackQ : IActivityLifecycleCallback {
     override fun onActivityPreCreated(activity: Activity, savedInstanceState: Bundle?) {
         if (activity !is IReduxView<*, *>) return
         if (activity !is FragmentActivity) return
@@ -76,9 +112,9 @@ internal class ActivityLifecycleCallback : IActivityLifecycleCallback {
 
 /**
  * [Description] : Fragment生命周期监听类
- * 
+ *
  * [Date] : 2022-05-27 16:54
- * 
+ *
  * [Author] : ceneax
  */
 internal class FragmentLifecycleCallbacksImpl : FragmentManager.FragmentLifecycleCallbacks() {
@@ -134,9 +170,9 @@ private fun <T : IReduxView<*, *>> initReduxByBeforeCreate(target: T, bundle: Bu
 
 /**
  * [Description] : 框架默认的[ViewModelFactory]
- * 
+ *
  * [Date] : 2022-05-27 16:51
- * 
+ *
  * [Author] : ceneax
  */
 internal class ReduxViewModelFactory : ViewModelProvider.Factory {
