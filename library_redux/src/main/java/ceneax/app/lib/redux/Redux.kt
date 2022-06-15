@@ -37,9 +37,9 @@ object Redux {
     }
 
     /**
-     * 提供给外部使用的初始化，用于自定义某些配置
+     * 提供给外部使用的初配置方法，用于自定义某些配置
      */
-    fun init(
+    fun config(
         loadingDialog: IReduxLoadingDialog<*> = ReduxLoadingDialog(),
         modelFactory: ViewModelProvider.Factory = ReduxViewModelFactory()
     ) {
