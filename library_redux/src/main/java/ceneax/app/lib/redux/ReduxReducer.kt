@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.*
 import kotlin.reflect.KProperty1
 
 @Suppress("UNCHECKED_CAST")
-abstract class ReduxViewModel<S : IReduxState> : ViewModel() {
+abstract class ReduxReducer<S : IReduxState> : ViewModel() {
     private val stateStore: IReduxStateStore<S> = ReduxStateStore(
         viewModelScope,
         MutableStateFlow(this::class.newGenericsInstance(0))
@@ -26,14 +26,14 @@ abstract class ReduxViewModel<S : IReduxState> : ViewModel() {
     }
 }
 
-internal inline fun <S : IReduxState> ReduxViewModel<S>.observeAll(
+internal inline fun <S : IReduxState> ReduxReducer<S>.observeAll(
     owner: LifecycleOwner,
     crossinline block: S.() -> Unit
 ) = stateFlow.onEach {
     block(stateFlow.value)
 }.launchIn(owner.lifecycleScope)
 
-internal inline fun <S : IReduxState> ReduxViewModel<S>.observe(
+internal inline fun <S : IReduxState> ReduxReducer<S>.observe(
     owner: LifecycleOwner,
     vararg props: KProperty1<IReduxState, *>,
     crossinline block: S.() -> Unit

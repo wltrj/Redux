@@ -13,7 +13,7 @@ import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
-abstract class ReduxEffect<VM : ReduxViewModel<*>> {
+abstract class ReduxEffect<RR : ReduxReducer<*>> {
     private lateinit var mReduxView: IReduxView<*, *>
 
     protected val ctx: EffectContext by lazy(LazyThreadSafetyMode.NONE) {
@@ -25,13 +25,13 @@ abstract class ReduxEffect<VM : ReduxViewModel<*>> {
     }
 
     @Suppress("UNCHECKED_CAST")
-    internal val _stateManager: VM by lazy(LazyThreadSafetyMode.NONE) {
+    internal val _stateManager: RR by lazy(LazyThreadSafetyMode.NONE) {
         ViewModelProvider(
             mReduxView.viewModelStoreOwner,
             Redux.viewModelFactory
         )[this::class.getGenericsClass(0)]
     }
-    val stateManager: VM get() = _stateManager
+    protected val stateManager: RR get() = _stateManager
 
     internal fun setBeforeData(data: Bundle) = data.keySet().forEach {
         runCatching {

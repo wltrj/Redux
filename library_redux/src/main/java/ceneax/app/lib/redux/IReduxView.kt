@@ -29,7 +29,7 @@ interface IReduxView<S : IReduxState, E : ReduxEffect<*>> {
  */
 class ReduxView<S : IReduxState, E : ReduxEffect<*>> : IReduxView<S, E> {
     @Suppress("UNCHECKED_CAST")
-    override val effect: E = object : ReduxEffect<ReduxViewModel<*>>() {} as E
+    override val effect: E = object : ReduxEffect<ReduxReducer<*>>() {} as E
 
     override fun invalidate(state: S) {}
 }

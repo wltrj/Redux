@@ -7,10 +7,9 @@
 
         <provider
             android:name="androidx.startup.InitializationProvider"
-            android:authorities="ceneax.app.lib.redux.androidx-startup"
+            android:authorities="${applicationId}.androidx-startup"
             android:exported="false"
-            tools:node="merge"
-            tools:replace="android:authorities">
+            tools:node="merge">
             <meta-data
                 android:name="ceneax.app.lib.redux.ReduxInitializer"
                 android:value="androidx.startup" />

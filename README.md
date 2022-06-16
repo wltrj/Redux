@@ -57,12 +57,12 @@ Redux最主要是用作应用状态的管理。简言之，Redux用一个单独�
   事件层，用于处理项目业务逻辑。
 - **State**
   状态持有层，用来保存当前最新状态数据。
-- **ViewModel**
-  状态管理层，Effect 层执行完逻辑后，若需要刷新UI，则执行 ViewModel 中相应函数，函数中会创建一个新的 State，并通知 View 层重绘UI。
+- **Reducer**
+  状态管理层，Effect 层执行完逻辑后，若需要刷新UI，则执行 Reducer 中相应函数，函数中会创建一个新的 State，并通知 View 层重绘UI。
 
 ### Android Redux 架构图
 
-![](https://pic.imgdb.cn/item/62a9f34409475431299e376e.png)
+![](https://pic.imgdb.cn/item/62ab6bf1094754312930b0bb.png)
 
 这样数据就会永远在一个环形结构中单向流动，不能反向流动，遵循 MVI 思想中所倡导的原则。
 
@@ -128,22 +128,22 @@ class DemoActivity : BaseActivity<ActivityDemoBinding>(), IReduxView<DemoState, 
 
 ```Kotlin
 // Effect 层相关代码
-// 需要继承 ReduxEffect 类，该类的泛型参数为 ViewModel
+// 需要继承 ReduxEffect 类，该类的泛型参数为 Reducer
 // 当继承了 ReduxEffect 类之后，DemoEffect 可以访问一个叫做 stateManager 的变量
-// 该变量可以执行 ViewModel 层的相关方法，真正开始去更新 State 和 UI
-class DemoEffect : ReduxEffect<DemoViewModel>() {
+// 该变量可以执行 Reducer 层的相关方法，真正开始去更新 State 和 UI
+class DemoEffect : ReduxEffect<DemoReducer>() {
 	fun increaseCounter() {
 		// 这里只是简单的演示状态更新，并没有在该方法中处理复杂逻辑
 		// 先获取当前 State 中最新的 counter 属性值
 		val newCounter = stateManager.state.counter
-		// 然后调用 ViewModel 层的方法，更新 State 值和UI界面
+		// 然后调用 Reducer 层的方法，更新 State 值和UI界面
 		// 新的值为当前的值累加1
 		stateManager.updateCounter(newCounter + 1)
 	}
 }
 ```
 
-**ViewModel 层相关代码**：
+**Reducer 层相关代码**：
 
 ```Kotlin
 // 首先定义一个类型为 Kotlin Data Class 的 State 类，并且实现了 IReduxState 接口
@@ -155,8 +155,8 @@ data class DemoState(
 	val counter: Int = 0
 ) : IReduxState
 
-// 该类固定继承 ReduxViewModel，泛型参数传上面定义好的 State 数据类
-class DemoViewModel : ReduxViewModel<DemoState>() {
+// 该类固定继承 ReduxReducer，泛型参数传上面定义好的 State 数据类
+class DemoReducer : ReduxReducer<DemoState>() {
 	/**
 	* 当 Effect 层调用该方法后，会执行 setState 并使用 Kotlin Data Class 数据类
 	* 自带的 copy 方法去创建一个新的 State 类，然后内部通知 View 层刷新UI
@@ -170,8 +170,10 @@ class DemoViewModel : ReduxViewModel<DemoState>() {
 到这里，一个简单的可运行的Demo就写好了，没有涉及复杂的操作。
 
 **View** 层只持有了 **State** 和 **Effect**，又因为 **State** 中的属性是 **val** 类型，所以在 **View** 层中，不能直接更改 **State** 的值，只能调用 **Effect** 中的方法去执行相应逻辑然后生成新的 **State**；
-**Effect** 层只持有了 **ViewModel**，即 **StateManager** 状态管理层，在 **Effect** 中执行完业务逻辑后，若需要更新UI，直接调用 **ViewModel** 层相关方法即可。该层不可以访问到 **View** 层，即和 **Activity**、**Fragment** 隔离。
-**ViewModel** 层只持有了保存 **State** 状态的实体类，该层仅用来创建新的 **State** 并通知 **View** 层刷新UI。
+
+**Effect** 层只持有了 **Reducer**，即 **StateManager** 状态管理层，在 **Effect** 中执行完业务逻辑后，若需要更新UI，直接调用 **Reducer** 层相关方法即可。该层不可以访问到 **View** 层，即和 **Activity**、**Fragment** 隔离；
+
+**Reducer** 层只持有了保存 **State** 状态的实体类，该层仅用来创建新的 **State** 并通知 **View** 层刷新UI。
 
 ### 指定 State 中单个或多个属性变化监听
 
@@ -200,7 +202,7 @@ class DemoActivity : BaseActivity<ActivityDemoBinding>(), IReduxView<DemoState, 
 
 
 // Effect 层相关代码
-class DemoEffect : ReduxEffect<DemoViewModel>() {
+class DemoEffect : ReduxEffect<DemoReducer>() {
 	fun increaseCounter() {
 		val newCounter = stateManager.state.counter
 		stateManager.updateCounter(newCounter + 1)
@@ -215,14 +217,14 @@ class DemoEffect : ReduxEffect<DemoViewModel>() {
 }
 
 
-// ViewModel 层相关代码
+// Reducer 层相关代码
 data class DemoState(
 	val counter: Int = 0,
 	// 当前时间戳
 	val time: Long = 0
 ) : IReduxState
 
-class DemoViewModel : ReduxViewModel<DemoState>() {
+class DemoReducer : ReduxReducer<DemoState>() {
 	fun updateCounter(newCounter: Int) = setState {
 		copy(counter = newCounter)
 	}
@@ -234,7 +236,7 @@ class DemoViewModel : ReduxViewModel<DemoState>() {
 }
 ```
 
-这时候应该会发现一个小瑕疵，就是每次 **ViewModel** 中执行 **updateTime()** 方法去生成新的 **State** 的时候，**counter** 属性并没有变更，但是由于 **Activity** 中 **invalidate(state: DemoState)** 方法体里进行了两个控件的同时刷新，就会使 **tvTimeNow** 控件刷新的时候一并也给 **tvCounter** 去刷新了，这样就产生了无效刷新，造成了不必要的资源浪费。所以框架提供了监听某个或多个 **State** 属性的方法，改造后的 **Activity** 代码如下：
+这时候应该会发现一个小瑕疵，就是每次 **Reducer** 中执行 **updateTime()** 方法去生成新的 **State** 的时候，**counter** 属性并没有变更，但是由于 **Activity** 中 **invalidate(state: DemoState)** 方法体里进行了两个控件的同时刷新，就会使 **tvTimeNow** 控件刷新的时候一并也给 **tvCounter** 去刷新了，这样就产生了无效刷新，造成了不必要的资源浪费。所以框架提供了监听某个或多个 **State** 属性的方法，改造后的 **Activity** 代码如下：
 
 ```Kotlin
 // 改造后的 Activity 代码
@@ -265,13 +267,13 @@ class DemoActivity : BaseActivity<ActivityDemoBinding>(), IReduxView<DemoState, 
 }
 ```
 
-这样改造后，因为 **State** 中的 **time** 属性被单独监听了，所以当 **ViewModel** 中只修改 **time** 属性值的话，那么每次 **ViewModel** 中执行 **updateTime(nowTime: Long)** 去刷新UI都会只执行 **observe(DemoState::time)** 这个方法，而不会执行 **invalidate(state: DemoState)** 了，从而避免了无效刷新，浪费资源。
+这样改造后，因为 **State** 中的 **time** 属性被单独监听了，所以当 **Reducer** 中只修改 **time** 属性值的话，那么每次 **Reducer** 中执行 **updateTime(nowTime: Long)** 去刷新UI都会只执行 **observe(DemoState::time)** 这个方法，而不会执行 **invalidate(state: DemoState)** 了，从而避免了无效刷新，浪费资源。
 
 ## 其它特性
 
 ### BeforeData
 
-**BeforeData** 是一个能够自动获取前一个界面跳转时传递过来的 **Bundle**，并自动注入到 **ViewModel** 层的一个功能。由注解来标记 **ViewModel** 中哪些属性是 **BeforeData**。
+**BeforeData** 是一个能够自动获取前一个界面跳转时传递过来的 **Bundle**，并自动注入到 **Reducer** 层的一个功能。由注解来标记 **Reducer** 中哪些属性是 **BeforeData**。
 
 示例：
 
@@ -281,7 +283,7 @@ data class DemoState(
 	val counter: Int = 0
 ) : IReduxState
 
-class DemoViewModel : ReduxViewModel<DemoState>() {
+class DemoReducer : ReduxReducer<DemoState>() {
 	// 该属性使用 @BD 注解来标记，当上一个 Activity 传递值的时候，会自动解析并注入到该变量中
 	// 可以赋值一个默认值，所以当未在 Bundle 中找到和该属性名相匹配的参数的时候
 	// 会保持当前默认值
@@ -299,27 +301,27 @@ class DemoViewModel : ReduxViewModel<DemoState>() {
 }
 ```
 
-上面展示了如何在 **ViewModel** 层中去定义一个 **BeforeData** 属性，下面展示如何在 **Activity** 中传值：
+上面展示了如何在 **Reducer** 层中去定义一个 **BeforeData** 属性，下面展示如何在 **Activity** 中传值：
 
 ```Kotlin
 // 这是前一个 Activity 部分关键代码
 class BeforeActivity : BaseActivity() {
-	override fun bindEvent() {
-		binding.btStartDemoActivity.setOnClickListener {
-			// Android 系统提供了一个 bundleOf 扩展方法，用来快速创建 Bundle 类，其中
-			// key 为 String 类型，value 为 Any 类型
-			// 但是这里的 bundleOf 不是 Android 系统提供的扩展函数，而是该框架提供的一个
-			// key 为 KProperty，value 为 Any 的扩展函数，这样的好处是，直接使用目标 
-			// ViewModel 层中已经定义好的 Kotlin 属性，当目标 ViewModel 中 BeforeData
-			// 相关属性名称发生变化了，那么这里由于找不到 DemoViewModel 中 KProperty
-			// 的引用，而使编译器报错，来提醒开发者要同步修改这里的代码。避免了界面跳转
-			// 传值时上一个界面定义的 key 和 接收方定义的 key 不一致而导致获取不到值的问题
-			val bundle = bundleOf(
-				DemoViewModel::content to "我是传递的值"
-			)
-			startActivity(Intent(this, DemoActivity::class.java).putExtras(bundle))
-		}
-	}
+  override fun bindEvent() {
+    binding.btStartDemoActivity.setOnClickListener {
+      // Android 系统提供了一个 bundleOf 扩展方法，用来快速创建 Bundle 类，其中
+      // key 为 String 类型，value 为 Any 类型
+      // 但是这里的 bundleOf 不是 Android 系统提供的扩展函数，而是该框架提供的一个
+      // key 为 KProperty，value 为 Any 的扩展函数，这样的好处是，直接使用目标 
+      // Reducer 层中已经定义好的 Kotlin 属性，当目标 Reducer 中 BeforeData
+      // 相关属性名称发生变化了，那么这里由于找不到 DemoReducer 中 KProperty
+      // 的引用，而使编译器报错，来提醒开发者要同步修改这里的代码。避免了界面跳转
+      // 传值时上一个界面定义的 key 和 接收方定义的 key 不一致而导致获取不到值的问题
+      val bundle = bundleOf(
+        DemoReducer::content to "我是传递的值"
+      )
+      startActivity(Intent(this, DemoActivity::class.java).putExtras(bundle))
+    }
+  }
 }
 ```
 

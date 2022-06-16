@@ -29,7 +29,7 @@ object Redux {
      */
     internal fun init(app: Application) {
         _application = app
-        app.registerActivityLifecycleCallbacks(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        _application.registerActivityLifecycleCallbacks(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             ActivityLifecycleCallbackQ()
         } else {
             ActivityLifecycleCallback()
