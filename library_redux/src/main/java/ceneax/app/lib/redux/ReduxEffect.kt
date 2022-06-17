@@ -13,7 +13,7 @@ import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
-abstract class ReduxEffect<RR : ReduxReducer<*>> {
+abstract class ReduxEffect<RR : ReduxReducer<*>, RS : IReduxSlot> {
     private lateinit var mReduxView: IReduxView<*, *>
 
     protected val ctx: EffectContext by lazy(LazyThreadSafetyMode.NONE) {
@@ -23,6 +23,8 @@ abstract class ReduxEffect<RR : ReduxReducer<*>> {
             fragmentManager = mReduxView.fragmentManager
         )
     }
+
+    protected val slot: RS = this::class.newGenericsInstance(1)
 
     @Suppress("UNCHECKED_CAST")
     internal val _stateManager: RR by lazy(LazyThreadSafetyMode.NONE) {
@@ -55,13 +57,7 @@ abstract class ReduxEffect<RR : ReduxReducer<*>> {
 
     suspend fun <T> loadingScope(
         block: suspend IReduxLoadingDialog<*>.() -> T
-    ): T {
-        Redux.loadingDialog.dialog?.show(ctx.fragmentManager, this@ReduxEffect::class.java.simpleName)
-        Redux.loadingDialog.setLoadingContent(Redux.loadingDialog.defaultContent)
-        val res = block(Redux.loadingDialog)
-        Redux.loadingDialog.dialog?.dismiss()
-        return res
-    }
+    ): T = ctx.loadingScope(block)
 
     data class EffectContext(
         val activity: Activity,
@@ -72,10 +68,10 @@ abstract class ReduxEffect<RR : ReduxReducer<*>> {
 
 suspend fun <T> ReduxEffect.EffectContext.loadingScope(
     block: suspend IReduxLoadingDialog<*>.() -> T
-): T {
-    Redux.loadingDialog.dialog?.show(fragmentManager, this::class.java.simpleName)
-    Redux.loadingDialog.setLoadingContent(Redux.loadingDialog.defaultContent)
+): T = Redux.loadingDialog.let {
+    it.dialog?.show(fragmentManager, this::class.java.simpleName)
+    it.setLoadingContent(Redux.loadingDialog.defaultContent)
     val res = block(Redux.loadingDialog)
-    Redux.loadingDialog.dialog?.dismiss()
-    return res
+    it.dialog?.dismiss()
+    res
 }

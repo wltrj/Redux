@@ -43,9 +43,9 @@ internal fun <R : Any> R.setDeclaredField(name: String, value: Any): R {
 }
 
 @Suppress("UNCHECKED_CAST")
-internal tailrec fun Class<*>.getSuperEffectClass(): Class<ReduxEffect<*>> {
+internal tailrec fun Class<*>.getSuperEffectClass(): Class<ReduxEffect<*, *>> {
     if (isAssignableFrom(ReduxEffect::class.java)) {
-        return this as Class<ReduxEffect<*>>
+        return this as Class<ReduxEffect<*, *>>
     }
     if (isAssignableFrom(Any::class.java)) {
         error("目标类必须继承 ReduxEffect 类")

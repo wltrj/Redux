@@ -162,7 +162,7 @@ private fun <T : IReduxView<*, *>> initReduxByBeforeCreate(target: T, bundle: Bu
         it::class.java.setDeclaredField(it!!, "effect", effect)
     }
 
-    (effect as ReduxEffect<*>).let {
+    (effect as ReduxEffect<*, *>).let {
         it._stateManager
         it.setBeforeData(bundle ?: Bundle())
     }

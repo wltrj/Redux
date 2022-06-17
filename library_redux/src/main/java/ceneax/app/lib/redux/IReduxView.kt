@@ -16,7 +16,7 @@ import kotlin.reflect.KProperty1
  *
  * [Author] : ceneax
  */
-interface IReduxView<S : IReduxState, E : ReduxEffect<*>> {
+interface IReduxView<S : IReduxState, E : ReduxEffect<*, *>> {
     // 用于访问 Effect 层相关属性和方法
     val effect: E
 
@@ -27,9 +27,9 @@ interface IReduxView<S : IReduxState, E : ReduxEffect<*>> {
 /**
  * [IReduxView] 的默认委托类
  */
-class ReduxView<S : IReduxState, E : ReduxEffect<*>> : IReduxView<S, E> {
+class ReduxView<S : IReduxState, E : ReduxEffect<*, *>> : IReduxView<S, E> {
     @Suppress("UNCHECKED_CAST")
-    override val effect: E = object : ReduxEffect<ReduxReducer<*>>() {} as E
+    override val effect: E = object : ReduxEffect<ReduxReducer<*>, EmptyReduxSlot>() {} as E
 
     override fun invalidate(state: S) {}
 }
@@ -50,7 +50,7 @@ internal inline val IReduxView<*, *>.viewModelStoreOwner: ViewModelStoreOwner
  * 提供给 [View层] 调用的 [State] 监听方法，用于单独监听 [State] 类中某一个属性值的变更
  */
 @Suppress("UNCHECKED_CAST")
-fun <S : IReduxState, E : ReduxEffect<*>> IReduxView<S, E>.observe(
+fun <S : IReduxState, E : ReduxEffect<*, *>> IReduxView<S, E>.observe(
     vararg props: KProperty1<S, *>,
     block: S.() -> Unit
 ) {
