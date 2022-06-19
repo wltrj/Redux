@@ -40,11 +40,15 @@ object Redux {
      * 提供给外部使用的初配置方法，用于自定义某些配置
      */
     fun config(
-        loadingDialog: IReduxLoadingDialog<*> = ReduxLoadingDialog(),
-        modelFactory: ViewModelProvider.Factory = ReduxViewModelFactory()
+        loadingDialog: IReduxLoadingDialog<*>? = null,
+        modelFactory: ViewModelProvider.Factory? = null
     ) {
-        _loadingDialog = loadingDialog
-        _viewModelFactory = modelFactory
+        loadingDialog?.let {
+            _loadingDialog = it
+        }
+        modelFactory?.let {
+            _viewModelFactory = it
+        }
     }
 }
 
@@ -162,10 +166,7 @@ private fun <T : IReduxView<*, *>> initReduxByBeforeCreate(target: T, bundle: Bu
         it::class.java.setDeclaredField(it!!, "effect", effect)
     }
 
-    (effect as ReduxEffect<*, *>).let {
-        it._stateManager
-        it.setBeforeData(bundle ?: Bundle())
-    }
+    (effect as ReduxEffect<*, *>)._stateManager.setBeforeData(bundle ?: Bundle())
 }
 
 /**
@@ -178,22 +179,5 @@ private fun <T : IReduxView<*, *>> initReduxByBeforeCreate(target: T, bundle: Bu
 internal class ReduxViewModelFactory : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return modelClass.newInstance()
-    }
-}
-
-interface IReduxLoadingDialog<D : DialogFragment> {
-    val dialog: D?
-
-    val defaultContent: String
-
-    fun setLoadingContent(content: String)
-}
-
-internal class ReduxLoadingDialog : IReduxLoadingDialog<DialogFragment> {
-    override val dialog: DialogFragment? = null
-
-    override val defaultContent: String = ""
-
-    override fun setLoadingContent(content: String) {
     }
 }

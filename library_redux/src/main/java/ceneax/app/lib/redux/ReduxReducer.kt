@@ -1,5 +1,6 @@
 package ceneax.app.lib.redux
 
+import android.os.Bundle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
@@ -7,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.*
 import kotlin.reflect.KProperty1
 
-@Suppress("UNCHECKED_CAST")
 abstract class ReduxReducer<S : IReduxState> : ViewModel() {
     private val stateStore: IReduxStateStore<S> = ReduxStateStore(
         viewModelScope,
@@ -18,11 +18,23 @@ abstract class ReduxReducer<S : IReduxState> : ViewModel() {
 
     val state: S get() = stateStore.state
 
-//    val stateEmitter = stateStore::setState
-
     protected fun setState(block: S.() -> S) {
         stateStore.setState(block)
-//        stateEmitter.invoke { block() }
+    }
+}
+
+internal class EmptyReducer : ReduxReducer<EmptyState>()
+
+internal fun <S : IReduxState> ReduxReducer<S>.setBeforeData(data: Bundle) = data.keySet().forEach {
+    runCatching {
+        this::class.java.getDeclaredField(it)
+    }.onSuccess { field ->
+        if (!field.isAnnotationPresent(BD::class.java)) {
+            return@forEach
+        }
+
+        field.isAccessible = true
+        field.set(this, data[it])
     }
 }
 
