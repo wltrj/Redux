@@ -2,10 +2,8 @@ package ceneax.app.redux
 
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
-import ceneax.app.lib.redux.EmptyReduxSlot
-import ceneax.app.lib.redux.IReduxSlot
-import ceneax.app.lib.redux.ReduxEffect
-import ceneax.app.lib.redux.ReduxLoadingDialogContext
+import ceneax.app.lib.redux.*
+import ceneax.app.redux.page.two.TwoActivity
 import ceneax.app.redux.repository.MainRepo
 import kotlinx.coroutines.delay
 import kotlin.concurrent.timer
@@ -23,10 +21,12 @@ class MainEffect : ReduxEffect<MainReducer, MainSlot>() {
 
         launch {
             loadingScope {
-                delay(2000)
-                setLoadingContent("123")
                 delay(1000)
+                setLoadingContent("123")
+                delay(2000)
             }
+
+            Toast.makeText(ctx.activity, "finish loading", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -34,6 +34,10 @@ class MainEffect : ReduxEffect<MainReducer, MainSlot>() {
         timer(period = 1000) {
             stateManager.updateTime(System.currentTimeMillis())
         }
+    }
+
+    fun openTwoActivity() {
+        ReduxRouter.instance.build(TwoActivity::class).navigation()
     }
 
     fun showLoading() = launch {

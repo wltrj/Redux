@@ -8,7 +8,7 @@ interface IReduxLoadingDialog<D : DialogFragment> {
 
     val defaultContent: String
 
-    fun DialogFragment.setLoadingContent(content: String)
+    fun D.setLoadingContent(content: String)
 }
 
 internal class ReduxLoadingDialog : IReduxLoadingDialog<DialogFragment> {
@@ -21,7 +21,7 @@ internal class ReduxLoadingDialog : IReduxLoadingDialog<DialogFragment> {
 
 class ReduxLoadingDialogContext(
     internal val dialogInstance: DialogFragment,
-    internal val reduxLoadingDialog: IReduxLoadingDialog<*>
+    internal val reduxLoadingDialog: IReduxLoadingDialog<DialogFragment>
 ) {
     fun setLoadingContent(content: String) = with(reduxLoadingDialog) {
         dialogInstance.setLoadingContent(content)

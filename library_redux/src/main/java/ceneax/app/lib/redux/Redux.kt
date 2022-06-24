@@ -21,8 +21,8 @@ object Redux {
     private var _viewModelFactory: ViewModelProvider.Factory = ReduxViewModelFactory()
     internal val viewModelFactory: ViewModelProvider.Factory get() = _viewModelFactory
 
-    private var _loadingDialog: IReduxLoadingDialog<*> = ReduxLoadingDialog()
-    internal val loadingDialog: IReduxLoadingDialog<*> get() = _loadingDialog
+    private var _loadingDialog: IReduxLoadingDialog<DialogFragment> = ReduxLoadingDialog()
+    internal val loadingDialog: IReduxLoadingDialog<DialogFragment> get() = _loadingDialog
 
     /**
      * 框架内部自动初始化方法，用于获取 Application 注册生命周期
@@ -39,12 +39,13 @@ object Redux {
     /**
      * 提供给外部使用的初配置方法，用于自定义某些配置
      */
+    @Suppress("UNCHECKED_CAST")
     fun config(
         loadingDialog: IReduxLoadingDialog<*>? = null,
         modelFactory: ViewModelProvider.Factory? = null
     ) {
         loadingDialog?.let {
-            _loadingDialog = it
+            _loadingDialog = it as IReduxLoadingDialog<DialogFragment>
         }
         modelFactory?.let {
             _viewModelFactory = it

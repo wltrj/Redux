@@ -13,29 +13,29 @@ class ReduxRouter private constructor() {
         val instance by lazy { ReduxRouter() }
     }
 
-    fun build(targetActivity: KClass<Activity>): RouterParams {
+    fun <A : Activity> build(targetActivity: KClass<A>): RouterParams<A> {
         return RouterParams.Builder(
             targetActivity = targetActivity
         ).build()
     }
 
-    fun build(activity: ComponentActivity, targetActivity: KClass<Activity>): RouterParams {
+    fun <A : Activity> build(activity: ComponentActivity, targetActivity: KClass<A>): RouterParams<A> {
         return RouterParams.Builder(
             activity = activity,
             targetActivity = targetActivity
         ).build()
     }
 
-    fun build(targetPath: String): RouterParams {
-        return RouterParams.Builder(
-        ).build()
-    }
+//    fun build(targetPath: String): RouterParams<*> {
+//        return RouterParams.Builder(
+//        ).build()
+//    }
 }
 
-class RouterParams private constructor(private val builder: Builder) {
-    data class Builder(
+class RouterParams<A : Activity> private constructor(private val builder: Builder<A>) {
+    data class Builder<A : Activity>(
         val activity: ComponentActivity? = null,
-        val targetActivity: KClass<Activity>? = null
+        val targetActivity: KClass<A>? = null
     ) {
         var bundle: Bundle? = null
         var onResult: ((ActivityResult) -> Unit)? = null
@@ -43,22 +43,20 @@ class RouterParams private constructor(private val builder: Builder) {
         fun build() = RouterParams(this)
     }
 
-    fun with(bundle: Bundle): RouterParams {
+    fun with(bundle: Bundle): RouterParams<A> {
         builder.bundle = bundle
         return this
     }
 
-    fun onResult(onResult: (ActivityResult) -> Unit): RouterParams {
+    fun onResult(onResult: (ActivityResult) -> Unit): RouterParams<A> {
         builder.onResult = onResult
         return this
     }
 
-    fun navigation() {
-        RouterExecutor(builder).execute()
-    }
+    fun navigation() = RouterExecutor(builder).execute()
 }
 
-class RouterExecutor(private val params: RouterParams.Builder) {
+class RouterExecutor<A : Activity>(private val params: RouterParams.Builder<A>) {
     fun execute() {
         if (params.targetActivity == null) {
             RLog.e("跳转失败，未找到目标Activity")
@@ -75,7 +73,9 @@ class RouterExecutor(private val params: RouterParams.Builder) {
 
     private fun navigationNoResult() {
         Redux.application.startActivity(
-            Intent(Redux.application, params.targetActivity!!.java),
+            Intent(Redux.application, params.targetActivity!!.java).also {
+                it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            },
             params.bundle
         )
     }

@@ -41,6 +41,27 @@ open class ReduxDialog : DialogFragment() {
     }
 }
 
+inline fun Int.whenOk(block: () -> Unit): Int {
+    if (this == ReduxDialog.Type.OK) {
+        block()
+    }
+    return this
+}
+
+inline fun Int.whenCancel(block: () -> Unit): Int {
+    if (this == ReduxDialog.Type.CANCEL) {
+        block()
+    }
+    return this
+}
+
+inline fun Int.whenNeutral(block: () -> Unit): Int {
+    if (this == ReduxDialog.Type.NEUTRAL) {
+        block()
+    }
+    return this
+}
+
 internal class Subscribe<T> {
     private var mCallback: (T) -> Unit = {}
 

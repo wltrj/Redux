@@ -15,6 +15,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IReduxView<MainState, 
         vb.fab.setOnClickListener {
             effect.increaseCounter()
         }
+
+        vb.btStartTwo.setOnClickListener {
+            effect.openTwoActivity()
+        }
     }
 
     override fun initData() {
