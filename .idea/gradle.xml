@@ -13,6 +13,8 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/library_redux" />
+            <option value="$PROJECT_DIR$/library_redux_annotation" />
+            <option value="$PROJECT_DIR$/library_redux_compiler" />
           </set>
         </option>
       </GradleProjectSettings>

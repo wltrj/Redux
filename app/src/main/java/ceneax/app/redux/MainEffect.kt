@@ -37,7 +37,17 @@ class MainEffect : ReduxEffect<MainReducer, MainSlot>() {
     }
 
     fun openTwoActivity() {
-        ReduxRouter.instance.build(TwoActivity::class).navigation()
+        ReduxRouter.instance.build(TwoActivity::class.java).navigation()
+    }
+
+    fun openTwoActivityWithResult() {
+        ReduxRouter.instance.build(ctx.activity, TwoActivity::class.java)
+            .onResult {
+                it.data?.extras?.apply {
+                    Toast.makeText(ctx.activity, getString("text", ""), Toast.LENGTH_SHORT).show()
+                }
+            }
+            .navigation()
     }
 
     fun showLoading() = launch {

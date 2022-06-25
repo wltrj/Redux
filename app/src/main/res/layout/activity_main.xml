@@ -51,6 +51,13 @@
                     android:layout_margin="20dp"
                     android:text="start two activity"/>
 
+            <Button
+                    android:id="@+id/btStartTwoWithResult"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dp"
+                    android:text="start two activity with result"/>
+
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>

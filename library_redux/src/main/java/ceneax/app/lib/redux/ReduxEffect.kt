@@ -1,9 +1,5 @@
 package ceneax.app.lib.redux
 
-import android.app.Activity
-import android.app.Dialog
-import android.os.Bundle
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
@@ -20,7 +16,7 @@ enum class ReduxReducerOwner {
 }
 
 data class EffectContext(
-    val activity: Activity,
+    val activity: FragmentActivity,
     val fragmentManager: FragmentManager,
     val lifecycleOwner: LifecycleOwner,
     val viewModelStoreOwner: ViewModelStoreOwner

@@ -1,5 +1,10 @@
 pluginManagement {
     repositories {
+        maven { url 'https://maven.aliyun.com/repository/public/' }
+        maven { url 'https://maven.aliyun.com/repository/jcenter' }
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://jitpack.io' }
+
         gradlePluginPortal()
         google()
         mavenCentral()
@@ -8,6 +13,11 @@ pluginManagement {
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
+        maven { url 'https://maven.aliyun.com/repository/public/' }
+        maven { url 'https://maven.aliyun.com/repository/jcenter' }
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://jitpack.io' }
+
         google()
         mavenCentral()
     }
@@ -15,3 +25,5 @@ dependencyResolutionManagement {
 rootProject.name = "Redux"
 include ':app'
 include ':library_redux'
+include ':library_redux_compiler'
+include ':library_redux_annotation'

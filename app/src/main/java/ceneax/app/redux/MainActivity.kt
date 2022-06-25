@@ -19,6 +19,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IReduxView<MainState, 
         vb.btStartTwo.setOnClickListener {
             effect.openTwoActivity()
         }
+
+        vb.btStartTwoWithResult.setOnClickListener {
+            effect.openTwoActivityWithResult()
+        }
     }
 
     override fun initData() {
