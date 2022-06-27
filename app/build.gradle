@@ -2,7 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
-    id 'ceneax.app.lib.redux'
+//    id 'ceneax.app.lib.redux'
 }
 
 android {
@@ -48,6 +48,9 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
-    implementation project(':redux')
-    kapt project(':compiler')
+//    implementation project(':redux')
+//    kapt project(':compiler')
+
+    implementation 'com.github.ceneax.Redux:redux:0.1.1'
+    kapt 'com.github.ceneax.Redux:compiler:0.1.1'
 }

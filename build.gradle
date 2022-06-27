@@ -7,7 +7,7 @@ plugins {
     // 用于 jitpack 一个项目多个 library 使用
     id 'com.github.dcendents.android-maven' version '2.1' apply false
     // Redux 插件
-    id 'ceneax.app.lib.redux' version '0.0.1'
+//    id 'ceneax.app.lib.redux' version '0.0.1'
 }
 
 task clean(type: Delete) {
