@@ -21,6 +21,27 @@ import ceneax.app.lib.redux.annotation.ReduxModule
 import kotlin.random.Random
 import kotlin.reflect.KClass
 
+object ReduxRouterCore {
+    private val mModuleController by lazy { ReduxRouterModuleController() }
+
+    fun addModuleName(name: String) {
+        try {
+            val cls = Class.forName(name)
+            if (ReduxModule::class.java.isAssignableFrom(cls)) {
+                addModule(cls.newInstance() as ReduxModule)
+            }
+        } catch (e: Exception) {
+            // 忽略
+        }
+    }
+
+    fun addModule(module: ReduxModule) = mModuleController.addModule(module)
+
+    fun removeModule(module: ReduxModule) = mModuleController.removeModule(module)
+
+    fun queryPageRoute(path: String): String = mModuleController.queryPageRoute(path)
+}
+
 class ReduxRouterModuleController {
     private val mModules = mutableListOf<ReduxModule>()
 
@@ -50,8 +71,6 @@ class ReduxRouterModuleController {
 class ReduxRouter private constructor() {
     companion object {
         val instance by lazy { ReduxRouter() }
-
-        val moduleController by lazy { ReduxRouterModuleController() }
     }
 
     fun <A : Activity> build(targetActivity: Class<A>): RouterParams {
@@ -69,14 +88,14 @@ class ReduxRouter private constructor() {
 
     fun build(targetPath: String): RouterParams {
         return RouterParams.Builder(
-            targetActivity = targetPath
+            targetActivity = ReduxRouterCore.queryPageRoute(targetPath)
         ).build()
     }
 
     fun build(activity: ComponentActivity, targetPath: String): RouterParams {
         return RouterParams.Builder(
             activity = activity,
-            targetActivity = targetPath
+            targetActivity = ReduxRouterCore.queryPageRoute(targetPath)
         ).build()
     }
 }

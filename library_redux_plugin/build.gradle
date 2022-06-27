@@ -1,0 +1,53 @@
+plugins {
+    id 'java-library'
+    id 'org.jetbrains.kotlin.jvm'
+    id 'groovy'
+    id 'java-gradle-plugin'
+    id 'maven-publish'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+group = 'ceneax.app.lib'
+version = '0.0.1'
+
+gradlePlugin {
+    plugins {
+        reduxPlugin {
+            id = 'ceneax.app.lib.redux'
+            displayName = 'Redux Plugin'
+            description = 'Redux Plugin'
+            implementationClass = 'ceneax.app.lib.redux.plugin.ReduxPlugin'
+        }
+    }
+}
+
+tasks.withType(Copy).all {
+    duplicatesStrategy 'exclude'
+}
+
+dependencies {
+    implementation gradleApi()
+    implementation localGroovy()
+    implementation "com.android.tools.build:gradle:7.0.4"
+    implementation 'com.android.tools.build:gradle-api:7.0.4'
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'ceneax.app.lib'
+            artifactId = 'redux'
+            version = '0.0.1'
+
+            from components.java
+        }
+    }
+
+    repositories {
+        mavenLocal()
+    }
+}

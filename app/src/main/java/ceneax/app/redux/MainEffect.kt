@@ -37,7 +37,7 @@ class MainEffect : ReduxEffect<MainReducer, MainSlot>() {
     }
 
     fun openTwoActivity() {
-        ReduxRouter.instance.build(TwoActivity::class.java).navigation()
+        ReduxRouter.instance.build("/redux/demo/two").navigation()
     }
 
     fun openTwoActivityWithResult() {

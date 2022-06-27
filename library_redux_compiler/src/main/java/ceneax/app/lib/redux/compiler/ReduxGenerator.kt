@@ -23,6 +23,7 @@ internal class ReduxGenerator(
             .build()
 
         val classBuilder = TypeSpec.classBuilder(className)
+            .addSuperinterface(mModuleClass)
             .primaryConstructor(FunSpec.constructorBuilder().build())
             .addProperty(
                 PropertySpec.builder("pageRouteMap", mMapClass)
