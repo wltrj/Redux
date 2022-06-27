@@ -3,6 +3,8 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
+group = 'com.github.ceneax'
+
 android {
     compileSdk 32
 
@@ -40,7 +42,7 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
-    api project(':library_redux_annotation')
+    api project(':annotation')
 
     // 协程
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0'

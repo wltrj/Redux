@@ -48,6 +48,9 @@ publishing {
     }
 
     repositories {
-        mavenLocal()
+        maven {
+            url '../repo'
+        }
+//        mavenLocal()
     }
 }

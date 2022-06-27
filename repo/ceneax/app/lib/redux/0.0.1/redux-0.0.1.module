@@ -1,0 +1,96 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "ceneax.app.lib",
+    "module": "plugin",
+    "version": "0.0.1",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "7.3.3"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.environment": "standard-jvm",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib-jdk8",
+          "version": {
+            "requires": "1.6.21"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "redux-0.0.1.jar",
+          "url": "redux-0.0.1.jar",
+          "size": 14041,
+          "sha512": "c6cb6c0872b3020b946e2fdf55e4bde902102c1ec2b33f3618938ae7924c4d4de57a317f3faf1f0ece9605dbdde49f437c988e85c01824a8caf26b2a21b67684",
+          "sha256": "0fb0568d5a3534a30cf3a6dc2575863d2d2325259bbd12bbd1df74c65153a907",
+          "sha1": "3330587b958bbc1c49f5cf7e1d030c27033aab4a",
+          "md5": "3d4d35cd474350edac38f1074d678155"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.environment": "standard-jvm",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "com.android.tools.build",
+          "module": "gradle",
+          "version": {
+            "requires": "7.0.4"
+          }
+        },
+        {
+          "group": "com.android.tools.build",
+          "module": "gradle-api",
+          "version": {
+            "requires": "7.0.4"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib-jdk8",
+          "version": {
+            "requires": "1.6.21"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "redux-0.0.1.jar",
+          "url": "redux-0.0.1.jar",
+          "size": 14041,
+          "sha512": "c6cb6c0872b3020b946e2fdf55e4bde902102c1ec2b33f3618938ae7924c4d4de57a317f3faf1f0ece9605dbdde49f437c988e85c01824a8caf26b2a21b67684",
+          "sha256": "0fb0568d5a3534a30cf3a6dc2575863d2d2325259bbd12bbd1df74c65153a907",
+          "sha1": "3330587b958bbc1c49f5cf7e1d030c27033aab4a",
+          "md5": "3d4d35cd474350edac38f1074d678155"
+        }
+      ]
+    }
+  ]
+}
