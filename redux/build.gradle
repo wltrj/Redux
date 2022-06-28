@@ -3,8 +3,6 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
-group = 'com.github.ceneax'
-
 android {
     compileSdk 32
 

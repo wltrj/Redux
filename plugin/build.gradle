@@ -11,7 +11,7 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
-group = 'ceneax.app.lib'
+group = 'com.github.ceneax'
 version = '0.0.1'
 
 gradlePlugin {
@@ -48,9 +48,6 @@ publishing {
     }
 
     repositories {
-        maven {
-            url '../repo'
-        }
-//        mavenLocal()
+        mavenLocal()
     }
 }

@@ -5,8 +5,7 @@ pluginManagement {
         maven { url 'https://maven.aliyun.com/repository/google' }
         maven { url 'https://jitpack.io' }
 
-//        maven { url './repo' }
-//        mavenLocal()
+        mavenLocal()
         gradlePluginPortal()
         google()
         mavenCentral()
