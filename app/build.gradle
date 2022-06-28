@@ -51,6 +51,6 @@ dependencies {
     implementation project(':redux')
     kapt project(':compiler')
 
-//    implementation 'com.github.ceneax.Redux:redux:0.1.1'
-//    kapt 'com.github.ceneax.Redux:compiler:0.1.1'
+//    implementation 'com.github.ceneax.Redux:redux:0.1.3'
+//    kapt 'com.github.ceneax.Redux:compiler:0.1.3'
 }
