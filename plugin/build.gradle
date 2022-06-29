@@ -4,26 +4,32 @@ plugins {
     id 'groovy'
     id 'java-gradle-plugin'
     id 'maven-publish'
-    id 'com.gradle.plugin-publish' version '0.18.0'
+    id 'com.gradle.plugin-publish' version '1.0.0-rc-3'
 }
+
+group = 'ceneax.app.plugin'
+version = '0.0.1'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
-group = 'com.github.ceneax'
-version = '0.0.1'
-
 gradlePlugin {
     plugins {
         reduxPlugin {
-            id = 'ceneax.app.lib.redux'
+            id = 'ceneax.app.plugin.redux'
             displayName = 'Redux Plugin'
             description = 'Redux Plugin'
             implementationClass = 'ceneax.app.lib.redux.plugin.ReduxPlugin'
         }
     }
+}
+
+pluginBundle {
+    website = 'https://github.com/ceneax/Redux'
+    vcsUrl = 'https://github.com/ceneax/Redux.git'
+    tags = ['Android', 'Redux', 'Plugin']
 }
 
 tasks.withType(Copy).all {
@@ -40,14 +46,13 @@ dependencies {
 publishing {
     publications {
         maven(MavenPublication) {
-            groupId = 'ceneax.app.lib'
+            groupId = 'ceneax.app.plugin'
             artifactId = 'redux'
             version = '0.0.1'
 
             from components.java
         }
     }
-
     repositories {
         mavenLocal()
     }
