@@ -7,7 +7,7 @@ plugins {
 //    id 'com.gradle.plugin-publish' version '1.0.0-rc-3'
 }
 
-//group = 'ceneax.app.plugin'
+group = 'ceneax.app.plugin'
 //version = '0.0.1'
 
 java {
@@ -53,7 +53,7 @@ publishing {
             from components.java
         }
     }
-    repositories {
-        mavenLocal()
-    }
+//    repositories {
+//        mavenLocal()
+//    }
 }
