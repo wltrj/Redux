@@ -1,7 +1,7 @@
 buildscript {
     dependencies {
         // Redux 插件
-        classpath 'com.github.ceneax.Redux:plugin:0.1.9'
+        classpath 'com.github.ceneax.Redux:plugin:0.2.0'
     }
 }
 
