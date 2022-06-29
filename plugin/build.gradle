@@ -4,11 +4,11 @@ plugins {
     id 'groovy'
     id 'java-gradle-plugin'
     id 'maven-publish'
-    id 'com.gradle.plugin-publish' version '1.0.0-rc-3'
+//    id 'com.gradle.plugin-publish' version '1.0.0-rc-3'
 }
 
-group = 'ceneax.app.plugin'
-version = '0.0.1'
+//group = 'ceneax.app.plugin'
+//version = '0.0.1'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -21,16 +21,16 @@ gradlePlugin {
             id = 'ceneax.app.plugin.redux'
             displayName = 'Redux Plugin'
             description = 'Redux Plugin'
-            implementationClass = 'ceneax.app.lib.redux.plugin.ReduxPlugin'
+            implementationClass = 'ceneax.app.plugin.redux.ReduxPlugin'
         }
     }
 }
 
-pluginBundle {
-    website = 'https://github.com/ceneax/Redux'
-    vcsUrl = 'https://github.com/ceneax/Redux.git'
-    tags = ['Android', 'Redux', 'Plugin']
-}
+//pluginBundle {
+//    website = 'https://github.com/ceneax/Redux'
+//    vcsUrl = 'https://github.com/ceneax/Redux.git'
+//    tags = ['Android', 'Redux', 'Plugin']
+//}
 
 tasks.withType(Copy).all {
     duplicatesStrategy 'exclude'

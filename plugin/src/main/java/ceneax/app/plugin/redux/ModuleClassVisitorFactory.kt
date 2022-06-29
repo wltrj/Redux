@@ -1,4 +1,4 @@
-package ceneax.app.lib.redux.plugin
+package ceneax.app.plugin.redux
 
 import com.android.build.api.instrumentation.*
 import org.gradle.api.provider.Property
@@ -71,9 +71,20 @@ class ModuleMethodVisitor(methodVisitor: MethodVisitor) : MethodVisitor(Opcodes.
         super.visitCode()
 
         ModuleHolder.forEach {
-            mv.visitFieldInsn(Opcodes.GETSTATIC, "ceneax/app/lib/redux/ReduxRouterCore", "INSTANCE", "Lceneax/app/lib/redux/ReduxRouterCore;")
+            mv.visitFieldInsn(
+                Opcodes.GETSTATIC,
+                "ceneax/app/lib/redux/ReduxRouterCore",
+                "INSTANCE",
+                "Lceneax/app/lib/redux/ReduxRouterCore;"
+            )
             mv.visitLdcInsn(it)
-            mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "ceneax/app/lib/redux/ReduxRouterCore", "addModuleName", "(Ljava/lang/String;)V", false)
+            mv.visitMethodInsn(
+                Opcodes.INVOKEVIRTUAL,
+                "ceneax/app/lib/redux/ReduxRouterCore",
+                "addModuleName",
+                "(Ljava/lang/String;)V",
+                false
+            )
         }
     }
 }

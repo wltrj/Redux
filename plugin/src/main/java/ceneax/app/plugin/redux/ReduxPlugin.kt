@@ -1,4 +1,4 @@
-package ceneax.app.lib.redux.plugin
+package ceneax.app.plugin.redux
 
 import com.android.build.api.instrumentation.FramesComputationMode
 import com.android.build.api.instrumentation.InstrumentationScope
