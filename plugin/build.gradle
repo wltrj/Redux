@@ -46,9 +46,9 @@ dependencies {
 publishing {
     publications {
         maven(MavenPublication) {
-            groupId = 'ceneax.app.plugin'
-            artifactId = 'redux'
-            version = '0.0.1'
+//            groupId = 'ceneax.app.plugin'
+//            artifactId = 'redux'
+//            version = '0.0.1'
 
             from components.java
         }
