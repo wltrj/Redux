@@ -54,7 +54,7 @@ abstract class ReduxEffect<RR : ReduxReducer<*>, RS : IReduxSlot>(
             Redux.viewModelFactory
         )[this::class.getGenericsClass(0)]
     }
-    protected val stateManager: RR get() = _stateManager
+    val stateManager: RR get() = _stateManager
 
     protected inline fun launch(
         context: CoroutineContext = EmptyCoroutineContext,
