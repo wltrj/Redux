@@ -37,11 +37,18 @@ class MainEffect : ReduxEffect<MainReducer, MainSlot>() {
     }
 
     fun openTwoActivity() {
-        ReduxRouter.instance.build("/redux/demo/two").navigation()
+        ReduxRouter.instance.build("/redux/demo/two")
+            .with(androidx.core.os.bundleOf(
+                "data" to "test data"
+            ))
+            .navigation()
     }
 
     fun openTwoActivityWithResult() {
         ReduxRouter.instance.build(ctx.activity, TwoActivity::class.java)
+            .with(androidx.core.os.bundleOf(
+                "data" to "test data"
+            ))
             .onResult {
                 it.data?.extras?.apply {
                     Toast.makeText(ctx.activity, getString("text", ""), Toast.LENGTH_SHORT).show()

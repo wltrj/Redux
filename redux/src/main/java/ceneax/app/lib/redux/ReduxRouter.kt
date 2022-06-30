@@ -2,24 +2,15 @@ package ceneax.app.lib.redux
 
 import android.app.Activity
 import android.content.Intent
-import android.content.IntentSender.SendIntentException
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResult
-import androidx.activity.result.ActivityResultRegistry
-import androidx.activity.result.IntentSenderRequest
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
-import androidx.core.app.ActivityOptionsCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import ceneax.app.lib.redux.annotation.ReduxModule
 import kotlin.random.Random
-import kotlin.reflect.KClass
 
 object ReduxRouterCore {
     private val mModuleController by lazy { ReduxRouterModuleController() }
@@ -143,7 +134,10 @@ class RouterExecutor(private val params: RouterParams.Builder) {
         Redux.application.startActivity(Intent().also {
             it.setClassName(Redux.application, params.targetActivity)
             it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        }, params.bundle)
+            if (params.bundle != null) {
+                it.putExtras(params.bundle!!)
+            }
+        })
     }
 
     private fun navigationWithResult() {
