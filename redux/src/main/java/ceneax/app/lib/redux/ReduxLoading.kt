@@ -31,6 +31,10 @@ class ReduxLoadingDialogContext(
 suspend fun <T> EffectContext.loadingScope(
     block: suspend ReduxLoadingDialogContext.() -> T
 ): T = loadingDialogContext.let {
+    if (fragmentManager.findFragmentByTag(this::class.java.simpleName) != null) {
+        return@let block(it)
+    }
+
     it.dialogInstance.show(fragmentManager, this::class.java.simpleName)
     it.setLoadingContent(it.reduxLoadingDialog.defaultContent)
     val result = block(it)
