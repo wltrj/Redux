@@ -7,12 +7,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.viewbinding.ViewBinding
+import java.io.Serializable
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-open class ReduxDialog<VB : ViewBinding> : DialogFragment() {
-    private val mSubscribe = Subscribe<Int>()
-    private var mType = Type.CANCEL
+open class ReduxDialog<VB : ViewBinding, P> : DialogFragment() {
+    private val mSubscribe = Subscribe<Result<P>>()
+    private var mResult = Result<P>()
 
     private var _viewBinding: VB? = null
     protected val vb get() = _viewBinding!!
@@ -37,7 +38,7 @@ open class ReduxDialog<VB : ViewBinding> : DialogFragment() {
     @ReduxInternalApi
     final override fun dismiss() {
         super.dismiss()
-        mSubscribe.post(mType)
+        mSubscribe.post(mResult)
     }
 
 //    @ReduxInternalApi
@@ -46,13 +47,13 @@ open class ReduxDialog<VB : ViewBinding> : DialogFragment() {
 //    }
 
     @OptIn(ReduxInternalApi::class)
-    protected open fun dismiss(type: Int) {
-        mType = type
+    protected open fun dismiss(type: Result<P>) {
+        mResult = type
         dismiss()
     }
 
 //    @OptIn(ReduxInternalApi::class)
-    suspend fun showAsSuspend(manager: FragmentManager, tag: String? = null) = suspendCoroutine<Int> {
+    suspend fun showAsSuspend(manager: FragmentManager, tag: String? = null) = suspendCoroutine<Result<P>> {
         mSubscribe.onSubscribe { value ->
             it.resume(value)
         }
@@ -64,25 +65,30 @@ open class ReduxDialog<VB : ViewBinding> : DialogFragment() {
         const val OK = 0
         const val NEUTRAL = 1
     }
+
+    data class Result<P>(
+        val type: Int = Type.CANCEL,
+        val payload: P? = null
+    ) : Serializable
 }
 
-inline fun Int.whenOk(block: () -> Unit): Int {
-    if (this == ReduxDialog.Type.OK) {
-        block()
+inline fun <P> ReduxDialog.Result<P>.whenOk(block: (P?) -> Unit): ReduxDialog.Result<P> {
+    if (type == ReduxDialog.Type.OK) {
+        block(payload)
     }
     return this
 }
 
-inline fun Int.whenCancel(block: () -> Unit): Int {
-    if (this == ReduxDialog.Type.CANCEL) {
-        block()
+inline fun <P> ReduxDialog.Result<P>.whenCancel(block: (P?) -> Unit): ReduxDialog.Result<P> {
+    if (type == ReduxDialog.Type.CANCEL) {
+        block(payload)
     }
     return this
 }
 
-inline fun Int.whenNeutral(block: () -> Unit): Int {
-    if (this == ReduxDialog.Type.NEUTRAL) {
-        block()
+inline fun <P> ReduxDialog.Result<P>.whenNeutral(block: (P?) -> Unit): ReduxDialog.Result<P> {
+    if (type == ReduxDialog.Type.NEUTRAL) {
+        block(payload)
     }
     return this
 }
