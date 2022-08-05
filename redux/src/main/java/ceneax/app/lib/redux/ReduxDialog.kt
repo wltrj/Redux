@@ -35,22 +35,27 @@ open class ReduxDialog<VB : ViewBinding, P> : DialogFragment() {
         _viewBinding = null
     }
 
-    @ReduxInternalApi
-    final override fun dismiss() {
+//    @ReduxInternalApi
+//    final override fun dismiss() {
+//        super.dismiss()
+//        mSubscribe.post(mResult)
+//    }
+
+    override fun dismiss() {
         super.dismiss()
         mSubscribe.post(mResult)
+    }
+
+//    @OptIn(ReduxInternalApi::class)
+    open fun dismiss(type: Result<P>) {
+        mResult = type
+        dismiss()
     }
 
 //    @ReduxInternalApi
 //    final override fun show(manager: FragmentManager, tag: String?) {
 //        super.show(manager, tag)
 //    }
-
-    @OptIn(ReduxInternalApi::class)
-    protected open fun dismiss(type: Result<P>) {
-        mResult = type
-        dismiss()
-    }
 
 //    @OptIn(ReduxInternalApi::class)
     suspend fun showAsSuspend(manager: FragmentManager, tag: String? = null) = suspendCoroutine<Result<P>> {
