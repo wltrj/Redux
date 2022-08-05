@@ -53,7 +53,7 @@ internal tailrec fun Class<*>.getSuperEffectClass(): Class<ReduxEffect<*, *>> {
     return superclass.getSuperEffectClass()
 }
 
-fun bundleOf(vararg pairs: Pair<KProperty1<*, *>, Any?>): Bundle = bundleOf(
+fun reduxBundleOf(vararg pairs: Pair<KProperty1<*, *>, Any?>): Bundle = bundleOf(
     *Array(pairs.size) {
         Pair(pairs[it].first.name, pairs[it].second)
     }

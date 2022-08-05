@@ -1,18 +1,38 @@
 package ceneax.app.lib.redux
 
-import androidx.annotation.LayoutRes
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
+import androidx.viewbinding.ViewBinding
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-open class ReduxDialog : DialogFragment {
+open class ReduxDialog<VB : ViewBinding> : DialogFragment() {
     private val mSubscribe = Subscribe<Int>()
     private var mType = Type.CANCEL
 
-    constructor() : super()
+    private var _viewBinding: VB? = null
+    protected val vb get() = _viewBinding!!
 
-    constructor(@LayoutRes contentLayoutId: Int) : super(contentLayoutId)
+    @Suppress("UNCHECKED_CAST")
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val cls: Class<VB> = this::class.getGenericsClass(0)
+        _viewBinding = cls.getDeclaredMethod("inflate", LayoutInflater::class.java)
+            .invoke(null, inflater) as VB
+        return vb.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _viewBinding = null
+    }
 
     @ReduxInternalApi
     final override fun dismiss() {
@@ -20,10 +40,10 @@ open class ReduxDialog : DialogFragment {
         mSubscribe.post(mType)
     }
 
-    @ReduxInternalApi
-    final override fun show(manager: FragmentManager, tag: String?) {
-        super.show(manager, tag)
-    }
+//    @ReduxInternalApi
+//    final override fun show(manager: FragmentManager, tag: String?) {
+//        super.show(manager, tag)
+//    }
 
     @OptIn(ReduxInternalApi::class)
     protected open fun dismiss(type: Int) {
@@ -31,7 +51,7 @@ open class ReduxDialog : DialogFragment {
         dismiss()
     }
 
-    @OptIn(ReduxInternalApi::class)
+//    @OptIn(ReduxInternalApi::class)
     suspend fun showAsSuspend(manager: FragmentManager, tag: String? = null) = suspendCoroutine<Int> {
         mSubscribe.onSubscribe { value ->
             it.resume(value)

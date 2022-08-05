@@ -34,6 +34,10 @@ android {
         // '-Xcontext-receivers'
         freeCompilerArgs = ['-Xopt-in=kotlin.RequiresOptIn']
     }
+
+    viewBinding {
+        enabled true
+    }
 }
 
 dependencies {
