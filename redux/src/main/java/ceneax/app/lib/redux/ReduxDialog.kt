@@ -1,13 +1,18 @@
 package ceneax.app.lib.redux
 
+import androidx.annotation.LayoutRes
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-open class ReduxDialog : DialogFragment() {
+open class ReduxDialog : DialogFragment {
     private val mSubscribe = Subscribe<Int>()
     private var mType = Type.CANCEL
+
+    constructor() : super()
+
+    constructor(@LayoutRes contentLayoutId: Int) : super(contentLayoutId)
 
     @ReduxInternalApi
     final override fun dismiss() {
