@@ -29,7 +29,12 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-
+            <Button
+                    android:id="@+id/btDialog"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dp"
+                    android:text="dialog"/>
 
         </LinearLayout>
 

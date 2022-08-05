@@ -1,5 +1,6 @@
 package ceneax.app.lib.redux
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -41,8 +42,8 @@ open class ReduxDialog<VB : ViewBinding, P> : DialogFragment() {
 //        mSubscribe.post(mResult)
 //    }
 
-    override fun dismiss() {
-        super.dismiss()
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
         mSubscribe.post(mResult)
     }
 
