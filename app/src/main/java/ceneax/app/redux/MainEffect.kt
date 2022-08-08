@@ -5,6 +5,7 @@ import androidx.fragment.app.DialogFragment
 import ceneax.app.lib.redux.*
 import ceneax.app.redux.page.two.TwoActivity
 import ceneax.app.redux.repository.MainRepo
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlin.concurrent.timer
 
@@ -22,7 +23,7 @@ class MainEffect : ReduxEffect<MainReducer, MainSlot>() {
         launch {
             loadingScope {
                 delay(1000)
-                setLoadingContent("123")
+                it.setLoadingContent("123")
                 delay(2000)
             }
 
@@ -59,7 +60,11 @@ class MainEffect : ReduxEffect<MainReducer, MainSlot>() {
 
     fun showLoading() = launch {
         loadingScope {
-            setLoadingContent("")
+            it.setLoadingContent("")
         }
+    }
+
+    suspend fun a() = loadingScope {
+        async { delay(100) }.await()
     }
 }

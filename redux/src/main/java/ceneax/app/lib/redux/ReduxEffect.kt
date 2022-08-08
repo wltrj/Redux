@@ -64,7 +64,7 @@ abstract class ReduxEffect<RR : ReduxReducer<*>, RS : IReduxSlot>(
     }
 
     suspend fun <T> loadingScope(
-        block: suspend ReduxLoadingDialogContext.() -> T
+        block: suspend CoroutineScope.(ReduxLoadingDialogContext) -> T
     ): T = ctx.loadingScope(block)
 }
 
