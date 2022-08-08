@@ -68,13 +68,14 @@ internal class ActivityLifecycleCallback : IActivityLifecycleCallback {
      */
     @Suppress("UNCHECKED_CAST")
     override fun onActivityCreated(activity: Activity, bundle: Bundle?) {
-        if (activity !is IReduxView<*, *>) return
         if (activity !is FragmentActivity) return
 
-        initReduxByBeforeCreate(activity, activity.intent?.extras)
-
-        (activity as FragmentActivity).supportFragmentManager
+        activity.supportFragmentManager
             .registerFragmentLifecycleCallbacks(FragmentLifecycleCallbacksImpl(), true)
+
+        if (activity !is IReduxView<*, *>) return
+
+        initReduxByBeforeCreate(activity, activity.intent?.extras)
 
         (activity as IReduxView<IReduxState, *>).let {
             it.effect._stateManager.observeAll(activity) {
@@ -93,13 +94,14 @@ internal class ActivityLifecycleCallback : IActivityLifecycleCallback {
  */
 internal class ActivityLifecycleCallbackQ : IActivityLifecycleCallback {
     override fun onActivityPreCreated(activity: Activity, savedInstanceState: Bundle?) {
-        if (activity !is IReduxView<*, *>) return
         if (activity !is FragmentActivity) return
 
-        initReduxByBeforeCreate(activity, activity.intent?.extras)
-
-        (activity as FragmentActivity).supportFragmentManager
+        activity.supportFragmentManager
             .registerFragmentLifecycleCallbacks(FragmentLifecycleCallbacksImpl(), true)
+
+        if (activity !is IReduxView<*, *>) return
+
+        initReduxByBeforeCreate(activity, activity.intent?.extras)
     }
 
     @Suppress("UNCHECKED_CAST")
