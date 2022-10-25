@@ -2,6 +2,7 @@ package ceneax.app.lib.redux
 
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
+import ceneax.app.lib.redux.simple.RContext
 import kotlinx.coroutines.CoroutineScope
 import kotlin.reflect.KClass
 
@@ -37,9 +38,25 @@ suspend fun <T> EffectContext.loadingScope(
         return@let lifecycleOwner.lifecycleScope.block(it)
     }
 
+    fragmentManager.beginTransaction().remove(it.dialogInstance).commit()
     it.dialogInstance.show(fragmentManager, this::class.java.simpleName)
     it.setLoadingContent(it.reduxLoadingDialog.defaultContent)
     val result = lifecycleOwner.lifecycleScope.block(it)
+    it.dialogInstance.dismiss()
+    result
+}
+
+suspend fun <T> RContext.loadingScope(
+    block: suspend CoroutineScope.(ReduxLoadingDialogContext) -> T
+): T = loadingDialogContext.let {
+    if (fragmentManager.findFragmentByTag(this::class.java.simpleName) != null) {
+        return@let coroutineScope.block(it)
+    }
+
+    fragmentManager.beginTransaction().remove(it.dialogInstance).commit()
+    it.dialogInstance.show(fragmentManager, this::class.java.simpleName)
+    it.setLoadingContent(it.reduxLoadingDialog.defaultContent)
+    val result = coroutineScope.block(it)
     it.dialogInstance.dismiss()
     result
 }

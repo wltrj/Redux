@@ -13,12 +13,13 @@ open class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        super.onCreate(savedInstanceState)
 
         // 使用反射得到ViewBinding的class
         val aClass = (this::class.java.genericSuperclass as ParameterizedType).actualTypeArguments[0] as Class<*>
         val method = aClass.getDeclaredMethod("inflate", LayoutInflater::class.java)
         _viewBinding = method.invoke(null, layoutInflater) as VB
+
+        super.onCreate(savedInstanceState)
 
         setContentView(vb.root)
 

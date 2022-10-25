@@ -1,6 +1,7 @@
 package ceneax.app.redux
 
 import ceneax.app.lib.redux.IReduxView
+import ceneax.app.lib.redux.ReduxRouter
 import ceneax.app.lib.redux.ReduxView
 import ceneax.app.lib.redux.observe
 import ceneax.app.redux.base.BaseActivity
@@ -22,6 +23,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), IReduxView<MainState, 
 
         vb.btStartTwoWithResult.setOnClickListener {
             effect.openTwoActivityWithResult()
+        }
+
+        vb.btStartSimple.setOnClickListener {
+            ReduxRouter.instance.build("/app/simple").navigation()
         }
     }
 
