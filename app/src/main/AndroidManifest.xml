@@ -24,6 +24,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".page.two.TwoActivity" />
+        <activity android:name=".page.simple.SimpleActivity" />
     </application>
 
 </manifest>
