@@ -1,7 +1,6 @@
 package ceneax.app.redux
 
 import android.widget.Toast
-import androidx.fragment.app.DialogFragment
 import ceneax.app.lib.redux.*
 import ceneax.app.redux.page.two.TwoActivity
 import ceneax.app.redux.repository.MainRepo
@@ -22,6 +21,7 @@ class MainEffect : ReduxEffect<MainReducer, MainSlot>() {
 
         launch {
             loadingScope {
+                it.setCancelable(false)
                 delay(1000)
                 it.setLoadingContent("123")
                 delay(2000)

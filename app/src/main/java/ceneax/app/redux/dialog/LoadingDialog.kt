@@ -1,16 +1,20 @@
 package ceneax.app.redux.dialog
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
-import android.view.TextureView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
 import ceneax.app.redux.R
 
 class LoadingDialog : DialogFragment() {
     private var mTvContent: TextView? = null
+
+    private var cancelable = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,5 +31,40 @@ class LoadingDialog : DialogFragment() {
 
     fun setContent(content: String) {
         mTvContent?.text = content
+    }
+
+    fun setDialogCancelable(cancelable: Boolean) {
+        this.cancelable = cancelable
+    }
+
+    override fun show(manager: FragmentManager, tag: String?) {
+        super.show(manager,tag)
+        runPost {
+            dialog?.apply {
+                setCancelable(cancelable)
+                setCanceledOnTouchOutside(cancelable)
+            }
+        }
+    }
+
+}
+
+val globalMainHandler = Handler(Looper.getMainLooper())
+
+inline fun runPost(crossinline block: () -> Unit) {
+    runPost(block, null)
+}
+
+inline fun runPost(crossinline block: () -> Unit, delayMillis: Long? = null) {
+    globalMainHandler.apply {
+        if (delayMillis == null) {
+            post {
+                block()
+            }
+        } else {
+            postDelayed({
+                block()
+            }, delayMillis)
+        }
     }
 }
