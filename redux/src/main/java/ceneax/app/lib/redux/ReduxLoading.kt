@@ -29,6 +29,10 @@ class ReduxLoadingDialogContext(
     fun setLoadingContent(content: String) = with(reduxLoadingDialog) {
         dialogInstance.setLoadingContent(content)
     }
+
+    fun setCancelable(cancel: Boolean){
+        dialogInstance.isCancelable = cancel
+    }
 }
 
 suspend fun <T> EffectContext.loadingScope(
