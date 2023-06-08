@@ -15,6 +15,11 @@ class App : Application() {
 
             override val defaultContent: String = ""
 
+
+            override fun LoadingDialog.setLoadingCancelable(boolean: Boolean) {
+                setDialogCancelable(boolean)
+            }
+
             override fun LoadingDialog.setLoadingContent(content: String) {
                 setContent(content)
             }

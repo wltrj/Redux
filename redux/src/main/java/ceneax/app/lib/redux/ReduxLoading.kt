@@ -11,13 +11,17 @@ interface IReduxLoadingDialog<D : DialogFragment> {
 
     val defaultContent: String
 
+
     fun D.setLoadingContent(content: String)
+    fun D.setLoadingCancelable(boolean: Boolean)
 }
 
 internal class ReduxLoadingDialog : IReduxLoadingDialog<DialogFragment> {
     override val dialog: KClass<DialogFragment> = DialogFragment::class
 
     override val defaultContent: String = ""
+
+    override fun DialogFragment.setLoadingCancelable(boolean: Boolean) {}
 
     override fun DialogFragment.setLoadingContent(content: String) {}
 }
@@ -30,8 +34,8 @@ class ReduxLoadingDialogContext(
         dialogInstance.setLoadingContent(content)
     }
 
-    fun setCancelable(cancel: Boolean){
-        dialogInstance.isCancelable = cancel
+    fun setCancelable(cancel: Boolean) = with(reduxLoadingDialog) {
+        dialogInstance.setLoadingCancelable(cancel)
     }
 }
 
