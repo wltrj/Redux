@@ -14,6 +14,7 @@ interface IReduxLoadingDialog<D : DialogFragment> {
 
     fun D.setLoadingContent(content: String)
     fun D.setLoadingCancelable(boolean: Boolean)
+    fun D.dismissDialog()
 }
 
 internal class ReduxLoadingDialog : IReduxLoadingDialog<DialogFragment> {
@@ -24,6 +25,8 @@ internal class ReduxLoadingDialog : IReduxLoadingDialog<DialogFragment> {
     override fun DialogFragment.setLoadingCancelable(boolean: Boolean) {}
 
     override fun DialogFragment.setLoadingContent(content: String) {}
+
+    override fun DialogFragment.dismissDialog() {}
 }
 
 class ReduxLoadingDialogContext(
@@ -37,9 +40,12 @@ class ReduxLoadingDialogContext(
     fun setCancelable(cancel: Boolean) = with(reduxLoadingDialog) {
         dialogInstance.setLoadingCancelable(cancel)
     }
+
+    fun dismissDialog() = dialogInstance.dismiss()
 }
 
 suspend fun <T> EffectContext.loadingScope(
+    autoDismiss: Boolean = true,
     block: suspend CoroutineScope.(ReduxLoadingDialogContext) -> T
 ): T = loadingDialogContext.let {
     if (fragmentManager.findFragmentByTag(this::class.java.simpleName) != null) {
@@ -50,11 +56,14 @@ suspend fun <T> EffectContext.loadingScope(
     it.dialogInstance.show(fragmentManager, this::class.java.simpleName)
     it.setLoadingContent(it.reduxLoadingDialog.defaultContent)
     val result = lifecycleOwner.lifecycleScope.block(it)
-    it.dialogInstance.dismiss()
+    if (autoDismiss) {
+        it.dialogInstance.dismiss()
+    }
     result
 }
 
 suspend fun <T> RContext.loadingScope(
+    autoDismiss: Boolean = true,
     block: suspend CoroutineScope.(ReduxLoadingDialogContext) -> T
 ): T = loadingDialogContext.let {
     if (fragmentManager.findFragmentByTag(this::class.java.simpleName) != null) {
@@ -65,6 +74,8 @@ suspend fun <T> RContext.loadingScope(
     it.dialogInstance.show(fragmentManager, this::class.java.simpleName)
     it.setLoadingContent(it.reduxLoadingDialog.defaultContent)
     val result = coroutineScope.block(it)
-    it.dialogInstance.dismiss()
+    if (autoDismiss) {
+        it.dialogInstance.dismiss()
+    }
     result
 }

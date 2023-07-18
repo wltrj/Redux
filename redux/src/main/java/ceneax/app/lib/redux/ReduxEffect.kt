@@ -64,8 +64,9 @@ abstract class ReduxEffect<RR : ReduxReducer<*>, RS : IReduxSlot>(
     }
 
     suspend fun <T> loadingScope(
+        autoDismiss: Boolean = true,
         block: suspend CoroutineScope.(ReduxLoadingDialogContext) -> T
-    ): T = ctx.loadingScope(block)
+    ): T = ctx.loadingScope(autoDismiss,block)
 }
 
 internal class EmptyEffect : ReduxEffect<EmptyReducer, EmptyReduxSlot>()
