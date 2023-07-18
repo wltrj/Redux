@@ -31,8 +31,9 @@ abstract class RControl<S : RState> @JvmOverloads constructor(
     }
 
     suspend fun <T> loadingScope(
+        autoDismiss: Boolean = true,
         block: suspend CoroutineScope.(ReduxLoadingDialogContext) -> T
-    ): T = internalContext.loadingScope(block)
+    ): T = internalContext.loadingScope(autoDismiss,block)
 }
 
 fun RControl<out RState>.launch(
