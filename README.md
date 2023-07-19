@@ -1,1 +1,1 @@
-[![](https://jitpack.io/v/wltrj/Redux.svg)](https://jitpack.io/#wltrj/Redux)
+[![](https://jitpack.io/v/ceneax/Redux.svg)](https://jitpack.io/#ceneax/Redux)
